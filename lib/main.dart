@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-var body;
-
 void main() {
   runApp(MyApp());
 }
@@ -20,23 +18,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class UserLogin extends StatefulWidget {
+class UserLogin extends StatelessWidget {
   final String title;
 
   UserLogin({Key key, this.title}) : super(key: key);
 
-  @override
-  _UserLoginState createState() => _UserLoginState();
-}
+  static TextEditingController emailEditingContrller = TextEditingController();
+  static TextEditingController passEditingContrller = TextEditingController();
 
-class _UserLoginState extends State<UserLogin> {
-  TextEditingController emailEditingContrller = TextEditingController();
-  TextEditingController passEditingContrller = TextEditingController();
-
-  final emailField = TextField(
+  var emailField = TextField(
     autofocus: false,
     obscureText: false,
     keyboardType: TextInputType.emailAddress,
+    controller: emailEditingContrller,
     decoration: InputDecoration(
         labelText: "Username",
         hintText: "Username",
@@ -49,10 +43,11 @@ class _UserLoginState extends State<UserLogin> {
             borderSide: BorderSide(width: 1, style: BorderStyle.solid))),
   );
 
-  final passwordField = TextField(
+  var passwordField = TextField(
     autofocus: false,
     obscureText: true,
     keyboardType: TextInputType.text,
+    controller: passEditingContrller,
     decoration: InputDecoration(
         labelText: "Password",
         hintText: "Password",
@@ -63,16 +58,6 @@ class _UserLoginState extends State<UserLogin> {
         border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(4)),
             borderSide: BorderSide(width: 1, style: BorderStyle.solid))),
-  );
-
-  final buttonField = Material(
-    child: MaterialButton(
-      onPressed: () => {},
-      textColor: Colors.white,
-      color: Colors.blue,
-      height: 50,
-      child: Text("LOGIN"),
-    ),
   );
 
   @override
@@ -100,11 +85,60 @@ class _UserLoginState extends State<UserLogin> {
                 SizedBox(
                   height: 50,
                 ),
-                buttonField,
+                Material(
+                  child: MaterialButton(
+                    onPressed: () {
+                      _navigateHome(context);
+                    },
+                    textColor: Colors.white,
+                    color: Colors.blue,
+                    height: 50,
+                    child: Text("LOGIN"),
+                  ),
+                ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  _navigateHome(BuildContext context) async {
+    final body =
+        await getInfo(emailEditingContrller.text, passEditingContrller.text);
+    User user =
+        new User(emailEditingContrller.text, passEditingContrller.text, body);
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage(
+                  user: user,
+                )));
+  }
+}
+
+class User {
+  final String userName;
+  final String password;
+  final String body;
+
+  User(this.userName, this.password, this.body);
+}
+
+class HomePage extends StatelessWidget {
+  final User user;
+
+  HomePage({Key key, this.user}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Home Page"),
+      ),
+      body: Center(
+        child: Text('${user.body}'),
       ),
     );
   }
