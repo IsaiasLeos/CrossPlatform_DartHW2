@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-
 var body;
 
 void main() {
@@ -16,22 +15,65 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: UserLogin(),
+      home: UserLogin(title: 'Login Page'),
     );
   }
 }
 
 class UserLogin extends StatefulWidget {
+  final String title;
+
+  UserLogin({Key key, this.title}) : super(key: key);
+
   @override
-  _UserLoginState createState() {
-    return _UserLoginState();
-  }
+  _UserLoginState createState() => _UserLoginState();
 }
 
 class _UserLoginState extends State<UserLogin> {
-
   TextEditingController emailEditingContrller = TextEditingController();
   TextEditingController passEditingContrller = TextEditingController();
+
+  final emailField = TextField(
+    autofocus: false,
+    obscureText: false,
+    keyboardType: TextInputType.emailAddress,
+    decoration: InputDecoration(
+        labelText: "Username",
+        hintText: "Username",
+        labelStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 16,
+        ),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            borderSide: BorderSide(width: 1, style: BorderStyle.solid))),
+  );
+
+  final passwordField = TextField(
+    autofocus: false,
+    obscureText: true,
+    keyboardType: TextInputType.text,
+    decoration: InputDecoration(
+        labelText: "Password",
+        hintText: "Password",
+        labelStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 16,
+        ),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            borderSide: BorderSide(width: 1, style: BorderStyle.solid))),
+  );
+
+  final buttonField = Material(
+    child: MaterialButton(
+      onPressed: () => {},
+      textColor: Colors.white,
+      color: Colors.blue,
+      height: 50,
+      child: Text("LOGIN"),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -47,69 +89,18 @@ class _UserLoginState extends State<UserLogin> {
               children: <Widget>[
                 Center(
                   child: SizedBox(
-                    height: 200,
+                    height: 125,
                   ),
                 ),
-                TextField(
-                  autofocus: false,
-                  obscureText: false,
-                  keyboardType: TextInputType.emailAddress,
-                  controller: emailEditingContrller,
-                  decoration: InputDecoration(
-                      labelText: "Username",
-                      hintText: "Username",
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                      ),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                          borderSide:
-                          BorderSide(width: 1, style: BorderStyle.solid))),
-                ),
+                emailField,
                 SizedBox(
                   height: 30,
                 ),
-                TextField(
-                  autofocus: false,
-                  obscureText: true,
-                  keyboardType: TextInputType.text,
-                  controller: passEditingContrller,
-                  decoration: InputDecoration(
-                      labelText: "Password",
-                      hintText: "Password",
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                      ),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                          borderSide:
-                          BorderSide(width: 1, style: BorderStyle.solid))),
-                ),
+                passwordField,
                 SizedBox(
                   height: 50,
                 ),
-                ButtonTheme(
-                  minWidth: double.infinity,
-                  child: MaterialButton(
-                    onPressed: () =>
-                    {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                SecondScreen(
-                                    emailEditingContrller.text,
-                                    passEditingContrller.text)),
-                      )
-                    },
-                    textColor: Colors.white,
-                    color: Colors.blue,
-                    height: 50,
-                    child: Text("LOGIN"),
-                  ),
-                )
+                buttonField,
               ],
             ),
           ),
@@ -117,8 +108,6 @@ class _UserLoginState extends State<UserLogin> {
       ),
     );
   }
-
-
 }
 
 dynamic getInfo(String name, String password) async {
@@ -128,58 +117,4 @@ dynamic getInfo(String name, String password) async {
       password;
   var response = await http.get(url);
   return response.body;
-}
-
-class SecondScreen extends StatelessWidget {
-  String user, pass;
-
-  SecondScreen(String user, String pass) {
-    this.user = user;
-    this.pass = pass;
-  }
-
-  Future<void> alertDialog(BuildContext context) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Not in stock'),
-          content: const Text('This item is no longer available'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Ok'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('My Grades'),
-      ),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(getInfo(this.user, this.pass).toString()),
-            SizedBox(height: 100),
-            RaisedButton(
-              child: Text('Go Back'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
