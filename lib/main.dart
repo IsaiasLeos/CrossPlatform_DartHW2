@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
-  runApp(MyApp());
+  runApp(MyApplication());
 }
 
-class MyApp extends StatelessWidget {
+class MyApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -105,8 +105,7 @@ class UserLogin extends StatelessWidget {
   }
 
   _navigateHome(BuildContext context) async {
-    final body =
-        await getInfo(emailEditingContrller.text, passEditingContrller.text);
+    final body = await getQuiz(emailEditingContrller, passEditingContrller);
     User user =
         new User(emailEditingContrller.text, passEditingContrller.text, body);
     final result = await Navigator.push(
@@ -144,11 +143,12 @@ class HomePage extends StatelessWidget {
   }
 }
 
-dynamic getInfo(String name, String password) async {
-  var url = 'http://www.cs.utep.edu/cheon/cs4381/grade/get.php?user=' +
-      name +
-      '&pin=' +
-      password;
-  var response = await http.get(url);
+dynamic getQuiz(
+    TextEditingController name, TextEditingController password) async {
+  var _password = password.text;
+  var _username = name.text;
+  var url = 'http://www.cs.utep.edu/cheon/cs4381/homework/quiz/post.php';
+  var body = '{"user": "$_username", "pin": "$_password", "quiz": "quiz01" }';
+  var response = await http.post(url, body: body);
   return response.body;
 }
