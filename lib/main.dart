@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:inclasshomework/quizParser.dart';
 
@@ -6,6 +8,9 @@ import 'Questions.dart';
 void main() {
   runApp(MyApplication());
 }
+
+final _formKey = GlobalKey<FormState>();
+var testGoodUser = new QuizParser();
 
 class MyApplication extends StatelessWidget {
   @override
@@ -28,7 +33,12 @@ class UserLogin extends StatelessWidget {
   static TextEditingController emailEditingContrller = TextEditingController();
   static TextEditingController passEditingContrller = TextEditingController();
 
-  var emailField = TextField(
+  var emailField = TextFormField(
+    validator: (value) {
+      if (value.isEmpty) {
+        return 'Empty Username';
+      }
+    },
     autofocus: false,
     obscureText: false,
     keyboardType: TextInputType.emailAddress,
@@ -45,7 +55,12 @@ class UserLogin extends StatelessWidget {
             borderSide: BorderSide(width: 1, style: BorderStyle.solid))),
   );
 
-  var passwordField = TextField(
+  var passwordField = TextFormField(
+    validator: (value) {
+      if (value.length != 4) {
+        return 'Please input your last 4 digits of your ID.';
+      }
+    },
     autofocus: false,
     obscureText: true,
     keyboardType: TextInputType.text,
@@ -89,15 +104,24 @@ class UserLogin extends StatelessWidget {
                 ),
                 Material(
                   child: MaterialButton(
-                    onPressed: () {
+                    onPressed: () async {
                       var user = new User(emailEditingContrller.text,
                           passEditingContrller.text, null, 0);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomePage(
-                                    user: user,
-                                  )));
+                      var isGood =
+                          await testGoodUser.getGrade(user.name, user.password);
+                      isGood = json.decode(isGood);
+                      print(isGood['response']);
+                      print(isGood['reason']);
+                      if (isGood['response']) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                      user: user,
+                                    )));
+                      } else {
+                        showAlertDialog(context, isGood['reason']);
+                      }
                     },
                     textColor: Colors.white,
                     color: Colors.blue,
@@ -114,13 +138,36 @@ class UserLogin extends StatelessWidget {
   }
 }
 
+showAlertDialog(BuildContext context, String reason) {
+  // Create button
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  AlertDialog alert = AlertDialog(
+    title: Text("Incorrect User Information"),
+    content: Text("Reason: $reason"),
+    actions: [
+      okButton,
+    ],
+  );
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
 class User {
-  String userName;
+  String name;
   String password;
   Questions body;
   int quizNumber;
 
-  User(this.userName, this.password, this.body, this.quizNumber);
+  User(this.name, this.password, this.body, this.quizNumber);
 }
 
 class HomePage extends StatelessWidget {
@@ -172,7 +219,7 @@ class HomePage extends StatelessWidget {
   }
 
   _navigateHome(BuildContext context) async {
-    var parser = new QuizParser(user.userName, user.password, user.quizNumber);
+    var parser = new QuizParser(user.name, user.password, user.quizNumber);
     var rawBody = await parser.getQuiz();
     user.body = await parser.parseQuestions(rawBody);
     await Navigator.push(
@@ -186,6 +233,7 @@ class HomePage extends StatelessWidget {
 
 class QuizHomePage extends StatelessWidget {
   User user;
+
   QuizHomePage({Key key, this.user}) : super(key: key);
 
   @override

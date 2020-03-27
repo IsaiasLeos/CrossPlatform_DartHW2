@@ -9,10 +9,23 @@ class QuizParser {
   String password;
   int quizNumber;
 
-  QuizParser(String username, String password, int quizNumber) {
+  QuizParser([String username, String password, int quizNumber]) {
     this.username = username;
     this.password = password;
     this.quizNumber = quizNumber;
+  }
+
+  Future<dynamic> getGrade(String name, String password) async {
+    var statusCode;
+    var url = 'http://www.cs.utep.edu/cheon/cs4381/grade/get.php?user=' +
+        name +
+        '&pin=' +
+        password;
+    var response = await http.get(url);
+    statusCode = response.statusCode;
+    print(statusCode);
+    print(response.body);
+    return response.body;
   }
 
   ///Makes connection with server to obtain a quiz in JSON format.
