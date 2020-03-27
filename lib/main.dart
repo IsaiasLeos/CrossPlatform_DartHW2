@@ -30,14 +30,14 @@ class UserLogin extends StatelessWidget {
 
   UserLogin({Key key, this.title}) : super(key: key);
 
-  static TextEditingController emailEditingContrller = TextEditingController();
-  static TextEditingController passEditingContrller = TextEditingController();
+  static final TextEditingController emailEditingController = TextEditingController();
+  static final TextEditingController passEditingController = TextEditingController();
 
-  var emailField = TextFormField(
+  final emailField = TextField(
     autofocus: false,
     obscureText: false,
     keyboardType: TextInputType.emailAddress,
-    controller: emailEditingContrller,
+    controller: emailEditingController,
     decoration: InputDecoration(
         labelText: "Username",
         hintText: "Username",
@@ -50,11 +50,11 @@ class UserLogin extends StatelessWidget {
             borderSide: BorderSide(width: 1, style: BorderStyle.solid))),
   );
 
-  var passwordField = TextFormField(
+  final passwordField = TextField(
     autofocus: false,
     obscureText: true,
     keyboardType: TextInputType.text,
-    controller: passEditingContrller,
+    controller: passEditingController,
     decoration: InputDecoration(
         labelText: "Password",
         hintText: "Password",
@@ -95,7 +95,8 @@ class UserLogin extends StatelessWidget {
                 Material(
                   child: MaterialButton(
                     onPressed: () async {
-                      var user = new User(emailEditingContrller.text, passEditingContrller.text,1);
+                      var user =
+                          new User(emailEditingController.text, passEditingController.text, 1);
                       var tempCheck = new QuizParser(user);
                       var isGood = await tempCheck.getQuiz();
                       isGood = json.decode(isGood);
@@ -149,7 +150,7 @@ showAlertDialog(BuildContext context, String reason) {
 }
 
 class HomePage extends StatelessWidget {
-  User user;
+  final User user;
 
   HomePage({Key key, this.user}) : super(key: key);
   final List<String> quizNumbers = <String>[
@@ -210,17 +211,12 @@ class HomePage extends StatelessWidget {
 }
 
 class QuizHomePage extends StatelessWidget {
-  User user;
-  String choice;
+  final User user;
 
   QuizHomePage({Key key, this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
-    final double itemWidth = size.width;
-
     return Scaffold(
         appBar: AppBar(
           title: Text("Question"),
@@ -231,7 +227,7 @@ class QuizHomePage extends StatelessWidget {
               child: ListView.builder(
                   itemCount: questionBody.questions.length,
                   itemBuilder: (BuildContext context, int index) {
-                    String inputstr = "";
+                    String input = "";
                     var bullet = index + 1;
                     if (questionBody.options[index] != 0) {
                       var tempList = (questionBody.options[index] as List).cast<String>();
@@ -263,10 +259,10 @@ class QuizHomePage extends StatelessWidget {
                                 new TextField(
                                   decoration: new InputDecoration(hintText: 'Answer'),
                                   onChanged: (String input) {
-                                    inputstr = input;
+                                    input = input;
                                   },
                                 ),
-                                new Text(inputstr),
+                                new Text(input),
                               ],
                             )),
                       );
