@@ -190,7 +190,6 @@ class QuizHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    print(user.body);
     return Scaffold(
         appBar: AppBar(
           title: Text("Question"),

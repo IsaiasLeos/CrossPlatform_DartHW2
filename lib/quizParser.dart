@@ -37,6 +37,7 @@ class QuizParser {
       var fixedQuiz = quiz['quiz']['question'] as List; //Question
       fixedQuiz.forEach((element) {
         //Iterate
+        questionRepo.figures.add(element['figure']);
         questionRepo.questions.add(element['stem']); //Gets literal question
         questionRepo.answers
             .add(element['answer']); //Gets the answer for the question
