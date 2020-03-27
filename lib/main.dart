@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:inclasshomework/quizParser.dart';
 
-import 'Questions.dart';
+import 'User.dart';
 
 void main() {
   runApp(MyApplication());
 }
 
-final _formKey = GlobalKey<FormState>();
-var testGoodUser = new QuizParser();
+var questionBody;
 
 class MyApplication extends StatelessWidget {
   @override
@@ -35,11 +34,6 @@ class UserLogin extends StatelessWidget {
   static TextEditingController passEditingContrller = TextEditingController();
 
   var emailField = TextFormField(
-    validator: (value) {
-      if (value.isEmpty) {
-        return 'Empty Username';
-      }
-    },
     autofocus: false,
     obscureText: false,
     keyboardType: TextInputType.emailAddress,
@@ -57,11 +51,6 @@ class UserLogin extends StatelessWidget {
   );
 
   var passwordField = TextFormField(
-    validator: (value) {
-      if (value.length != 4) {
-        return 'Please input your last 4 digits of your ID.';
-      }
-    },
     autofocus: false,
     obscureText: true,
     keyboardType: TextInputType.text,
@@ -106,9 +95,9 @@ class UserLogin extends StatelessWidget {
                 Material(
                   child: MaterialButton(
                     onPressed: () async {
-                      var user =
-                          new User(emailEditingContrller.text, passEditingContrller.text, null, 0);
-                      var isGood = await testGoodUser.getGrade(user.name, user.password);
+                      var user = new User(emailEditingContrller.text, passEditingContrller.text,1);
+                      var tempCheck = new QuizParser(user);
+                      var isGood = await tempCheck.getQuiz();
                       isGood = json.decode(isGood);
                       if (isGood['response']) {
                         Navigator.push(
@@ -157,15 +146,6 @@ showAlertDialog(BuildContext context, String reason) {
       return alert;
     },
   );
-}
-
-class User {
-  String name;
-  String password;
-  Questions body;
-  int quizNumber;
-
-  User(this.name, this.password, this.body, this.quizNumber);
 }
 
 class HomePage extends StatelessWidget {
@@ -217,9 +197,9 @@ class HomePage extends StatelessWidget {
   }
 
   _navigateHome(BuildContext context) async {
-    var parser = new QuizParser(user.name, user.password, user.quizNumber);
+    var parser = new QuizParser(user, user.quizNumber);
     var rawBody = await parser.getQuiz();
-    user.body = await parser.parseQuestions(rawBody);
+    questionBody = await parser.parseQuestions(rawBody);
     await Navigator.push(
         context,
         MaterialPageRoute(
@@ -231,7 +211,6 @@ class HomePage extends StatelessWidget {
 
 class QuizHomePage extends StatelessWidget {
   User user;
-  String _radioValue;
   String choice;
 
   QuizHomePage({Key key, this.user}) : super(key: key);
@@ -250,19 +229,19 @@ class QuizHomePage extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: ListView.builder(
-                  itemCount: user.body.questions.length,
+                  itemCount: questionBody.questions.length,
                   itemBuilder: (BuildContext context, int index) {
                     String inputstr = "";
                     var bullet = index + 1;
-                    if (user.body.options[index] != 0) {
-                      var tempList = (user.body.options[index] as List).cast<String>();
+                    if (questionBody.options[index] != 0) {
+                      var tempList = (questionBody.options[index] as List).cast<String>();
                       return Card(
                         child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
                               children: <Widget>[
                                 Text(
-                                  ('$bullet. ${user.body.questions[index]}'),
+                                  ('$bullet. ${questionBody.questions[index]}'),
                                   style: TextStyle(fontSize: 22.0),
                                 ),
                                 RadioButtonGroup(
@@ -278,7 +257,7 @@ class QuizHomePage extends StatelessWidget {
                             child: Column(
                               children: <Widget>[
                                 Text(
-                                  ('$bullet. ${user.body.questions[index]}'),
+                                  ('$bullet. ${questionBody.questions[index]}'),
                                   style: TextStyle(fontSize: 22.0),
                                 ),
                                 new TextField(
