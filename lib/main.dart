@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:inclasshomework/quizParser.dart';
+
+import 'Questions.dart';
 
 void main() {
   runApp(MyApplication());
@@ -13,7 +15,7 @@ class MyApplication extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: UserLogin(title: 'Login Page'),
+      home: UserLogin(title: 'Login'),
     );
   }
 }
@@ -64,7 +66,7 @@ class UserLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('First Screen'),
+        title: Text('$title'),
       ),
       body: Center(
         child: Container(
@@ -88,7 +90,14 @@ class UserLogin extends StatelessWidget {
                 Material(
                   child: MaterialButton(
                     onPressed: () {
-                      _navigateHome(context);
+                      var user = new User(emailEditingContrller.text,
+                          passEditingContrller.text, null, 0);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePage(
+                                    user: user,
+                                  )));
                     },
                     textColor: Colors.white,
                     color: Colors.blue,
@@ -103,52 +112,103 @@ class UserLogin extends StatelessWidget {
       ),
     );
   }
+}
+
+class User {
+  String userName;
+  String password;
+  Questions body;
+  int quizNumber;
+
+  User(this.userName, this.password, this.body, this.quizNumber);
+}
+
+class HomePage extends StatelessWidget {
+  User user;
+
+  HomePage({Key key, this.user}) : super(key: key);
+  final List<String> quizNumbers = <String>[
+    'Quiz 1',
+    'Quiz 2',
+    'Quiz 3',
+    'Quiz 4',
+    'Quiz 5',
+    'Quiz 6',
+    'Quiz 7',
+    'Quiz 8',
+    'Quiz 9',
+    'Quiz 10',
+    'Quiz 11',
+    'Quiz 12',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Quiz"),
+        ),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView.builder(
+                  itemCount: quizNumbers.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      height: 50,
+                      margin: EdgeInsets.all(2.0),
+                      child: RaisedButton(
+                        onPressed: () {
+                          user.quizNumber = index;
+                          _navigateHome(context);
+                        },
+                        child: Text('${quizNumbers[index]}'),
+                      ),
+                    );
+                  }),
+            ),
+          ],
+        ));
+  }
 
   _navigateHome(BuildContext context) async {
-    final body = await getQuiz(emailEditingContrller, passEditingContrller);
-    User user =
-        new User(emailEditingContrller.text, passEditingContrller.text, body);
-    final result = await Navigator.push(
+    var parser = new QuizParser(user.userName, user.password, user.quizNumber);
+    var rawBody = await parser.getQuiz();
+    user.body = await parser.parseQuestions(rawBody);
+    await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => HomePage(
+            builder: (context) => QuizHomePage(
                   user: user,
                 )));
   }
 }
 
-class User {
-  final String userName;
-  final String password;
-  final String body;
-
-  User(this.userName, this.password, this.body);
-}
-
-class HomePage extends StatelessWidget {
-  final User user;
-
-  HomePage({Key key, this.user}) : super(key: key);
+class QuizHomePage extends StatelessWidget {
+  User user;
+  QuizHomePage({Key key, this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+//    print(user.body);
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home Page"),
-      ),
-      body: Center(
-        child: Text('${user.body}'),
-      ),
-    );
+        appBar: AppBar(
+          title: Text("Question"),
+        ),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView.builder(
+                  itemCount: user.body.questions.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      height: 50,
+                      margin: EdgeInsets.all(2.0),
+                      child: Text('${user.body.questions[index]}'),
+                    );
+                  }),
+            ),
+          ],
+        ));
   }
-}
-
-dynamic getQuiz(
-    TextEditingController name, TextEditingController password) async {
-  var _password = password.text;
-  var _username = name.text;
-  var url = 'http://www.cs.utep.edu/cheon/cs4381/homework/quiz/post.php';
-  var body = '{"user": "$_username", "pin": "$_password", "quiz": "quiz01" }';
-  var response = await http.post(url, body: body);
-  return response.body;
 }
