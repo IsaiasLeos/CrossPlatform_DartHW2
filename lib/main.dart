@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:inclasshomework/quizParser.dart';
 
 import 'Questions.dart';
@@ -105,13 +106,10 @@ class UserLogin extends StatelessWidget {
                 Material(
                   child: MaterialButton(
                     onPressed: () async {
-                      var user = new User(emailEditingContrller.text,
-                          passEditingContrller.text, null, 0);
-                      var isGood =
-                          await testGoodUser.getGrade(user.name, user.password);
+                      var user =
+                          new User(emailEditingContrller.text, passEditingContrller.text, null, 0);
+                      var isGood = await testGoodUser.getGrade(user.name, user.password);
                       isGood = json.decode(isGood);
-                      print(isGood['response']);
-                      print(isGood['reason']);
                       if (isGood['response']) {
                         Navigator.push(
                             context,
@@ -233,11 +231,17 @@ class HomePage extends StatelessWidget {
 
 class QuizHomePage extends StatelessWidget {
   User user;
+  String _radioValue;
+  String choice;
 
   QuizHomePage({Key key, this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
+    final double itemWidth = size.width;
+
     return Scaffold(
         appBar: AppBar(
           title: Text("Question"),
@@ -248,11 +252,46 @@ class QuizHomePage extends StatelessWidget {
               child: ListView.builder(
                   itemCount: user.body.questions.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      height: 50,
-                      margin: EdgeInsets.all(2.0),
-                      child: Text('${user.body.questions[index]}'),
-                    );
+                    String inputstr = "";
+                    var bullet = index + 1;
+                    if (user.body.options[index] != 0) {
+                      var tempList = (user.body.options[index] as List).cast<String>();
+                      return Card(
+                        child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  ('$bullet. ${user.body.questions[index]}'),
+                                  style: TextStyle(fontSize: 22.0),
+                                ),
+                                RadioButtonGroup(
+                                  labels: tempList,
+                                )
+                              ],
+                            )),
+                      );
+                    } else {
+                      return Card(
+                        child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  ('$bullet. ${user.body.questions[index]}'),
+                                  style: TextStyle(fontSize: 22.0),
+                                ),
+                                new TextField(
+                                  decoration: new InputDecoration(hintText: 'Answer'),
+                                  onChanged: (String input) {
+                                    inputstr = input;
+                                  },
+                                ),
+                                new Text(inputstr),
+                              ],
+                            )),
+                      );
+                    }
                   }),
             ),
           ],

@@ -17,10 +17,7 @@ class QuizParser {
 
   Future<dynamic> getGrade(String name, String password) async {
     var statusCode;
-    var url = 'http://www.cs.utep.edu/cheon/cs4381/grade/get.php?user=' +
-        name +
-        '&pin=' +
-        password;
+    var url = 'http://www.cs.utep.edu/cheon/cs4381/grade/get.php?user=' + name + '&pin=' + password;
     var response = await http.get(url);
     statusCode = response.statusCode;
     print(statusCode);
@@ -31,8 +28,7 @@ class QuizParser {
   ///Makes connection with server to obtain a quiz in JSON format.
   Future<dynamic> getQuiz() async {
     var url = 'http://www.cs.utep.edu/cheon/cs4381/homework/quiz/post.php';
-    var body =
-        '{"user": "$username", "pin": "$password", "quiz": "quiz0$quizNumber" }';
+    var body = '{"user": "$username", "pin": "$password", "quiz": "quiz0$quizNumber" }';
     var response = await http.post(url, body: body);
     print(response.body.toString());
     return response.body;
@@ -52,14 +48,11 @@ class QuizParser {
         //Iterate
         questionRepo.figures.add(element['figure']);
         questionRepo.questions.add(element['stem']); //Gets literal question
-        questionRepo.answers
-            .add(element['answer']); //Gets the answer for the question
-        if (element['option'] == null) {
-          //assigns 0 because no options are available
-          questionRepo.options.add(0);
-        } else {
-          //assigns options if available
+        questionRepo.answers.add(element['answer']); //Gets the answer for the question
+        if (element['option'] != null) {
           questionRepo.options.add(element['option']);
+        } else {
+          questionRepo.options.add(0);
         }
       });
     }
