@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:inclasshomework/AnswerHomePage.dart';
 
 import 'User.dart';
 
-List<String> quizController = new List(10);
+List<String> userAnswers = List(10);
 
 class QuizHomePage extends StatefulWidget {
   User user;
@@ -19,10 +20,9 @@ class QuizHomePage extends StatefulWidget {
 }
 
 class _QuizHomePageState extends State<QuizHomePage> {
-  User user;
+  var user;
   var questionBody;
-  int selectedBox;
-  String answer;
+  int selected;
 
   _QuizHomePageState({Key key, this.user, this.questionBody});
 
@@ -43,6 +43,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   itemBuilder: (BuildContext context, int index) {
                     var bullet = index + 1;
                     if (questionBody.options[index] != 0) {
+                      var tempList = questionBody.options[index].cast<String>();
                       return Card(
                         child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -52,30 +53,22 @@ class _QuizHomePageState extends State<QuizHomePage> {
                                   ('$bullet. ${questionBody.questions[index]}'),
                                   style: TextStyle(fontSize: 22.0),
                                 ),
-                                createCheckBoxGroup(questionBody.options[index]),
+                                RadioButtonGroup(
+                                  labels: tempList,
+                                  onSelected: (selected) {
+                                    setState(() {
+                                      userAnswers[index] = selected;
+                                    });
+                                  },
+                                )
                               ],
                             )),
                       );
                     } else {
-                      TextEditingController myController = new TextEditingController();
                       return Card(
                         child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              children: <Widget>[
-                                Text(
-                                  ('$bullet. ${questionBody.questions[index]}'),
-                                  style: TextStyle(fontSize: 22.0),
-                                ),
-                                new TextField(
-                                  controller: myController,
-                                  decoration: new InputDecoration(hintText: 'Answer'),
-                                  onChanged: (value) {
-                                    quizController[index] = value;
-                                  },
-                                ),
-                              ],
-                            )),
+                            child: createOpenQuestion(bullet, index)),
                       );
                     }
                   }),
@@ -83,17 +76,15 @@ class _QuizHomePageState extends State<QuizHomePage> {
             Material(
               child: MaterialButton(
                 onPressed: () {
-                  bool continueToReview = true;
-                  quizController.forEach((element) {
-                    print(element);
-                  });
-                  if (continueToReview)
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AnswerHomePage(
-                                  answers: quizController,
-                                )));
+                  List<String> tempList = userAnswers;
+                  userAnswers = List(10);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AnswerHomePage(
+                                userAnswers: tempList,
+                                quizAnswers: questionBody.answers,
+                              )));
                 },
                 textColor: Colors.white,
                 color: Colors.blue,
@@ -105,16 +96,28 @@ class _QuizHomePageState extends State<QuizHomePage> {
         ));
   }
 
-  Widget createCheckBoxGroup(List<dynamic> options) {
+  Widget createOpenQuestion(int bullet, int index) {
+    TextEditingController myController = new TextEditingController();
     return Column(
-      children: options.asMap().entries.map((entry) {
-        return CheckboxListTile(
-          title: Text(entry.value.toString()),
-          value: selectedBox == entry.key,
-          onChanged: (newValue) => setState(() => selectedBox = entry.key),
-          controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
-        );
-      }).toList(),
+      children: <Widget>[
+        Text(
+          ('$bullet. ${questionBody.questions[index]}'),
+          style: TextStyle(fontSize: 22.0),
+        ),
+        new TextField(
+          controller: myController,
+          decoration: new InputDecoration(hintText: 'Answer'),
+          autocorrect: false,
+          onChanged: (value) {
+            userAnswers[index] = value;
+          },
+        ),
+      ],
     );
+  }
+
+  Widget createCheckBoxGroup(List<dynamic> options, int index) {
+
+
   }
 }

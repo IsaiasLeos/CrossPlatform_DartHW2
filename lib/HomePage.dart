@@ -54,8 +54,10 @@ class _HomePageState extends State<HomePage> {
                       margin: EdgeInsets.all(2.0),
                       child: RaisedButton(
                         onPressed: () {
-                          user.quizNumber = index;
-                          _navigateHome(context);
+                          setState(() {
+                            user.quizNumber = index;
+                            _navigateHome(context);
+                          });
                         },
                         child: Text('${quizNumbers[index]}'),
                       ),

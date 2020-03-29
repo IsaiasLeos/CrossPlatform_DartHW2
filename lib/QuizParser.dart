@@ -21,7 +21,6 @@ class QuizParser {
     var url = 'http://www.cs.utep.edu/cheon/cs4381/homework/quiz/post.php';
     var body = '{"user": "$username", "pin": "$password", "quiz": "quiz0$quizNumber" }';
     var response = await http.post(url, body: body);
-    print(response.body.toString());
     return response.body;
   }
 
@@ -39,7 +38,7 @@ class QuizParser {
         //Iterate
         questionRepo.figures.add(element['figure']);
         questionRepo.questions.add(element['stem']); //Gets literal question
-        questionRepo.answers.add(element['answer']); //Gets the answer for the question
+        questionRepo.answers.add(element['answer']);
         if (element['option'] != null) {
           questionRepo.options.add(element['option']);
         } else {

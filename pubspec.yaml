@@ -9,6 +9,7 @@ environment:
 dependencies:
   http: any
   html: any
+  grouped_buttons: ^1.0.4
   flutter:
     sdk: flutter
 
