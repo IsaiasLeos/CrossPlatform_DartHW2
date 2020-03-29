@@ -55,10 +55,9 @@ class _QuizHomePageState extends State<QuizHomePage> {
                                 ),
                                 RadioButtonGroup(
                                   labels: tempList,
-                                  onSelected: (selected) {
-                                    setState(() {
-                                      userAnswers[index] = selected;
-                                    });
+                                  onChange: (label, value) {
+                                    value += 1;
+                                    userAnswers[index] = value.toString();
                                   },
                                 )
                               ],
@@ -83,7 +82,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                       MaterialPageRoute(
                           builder: (context) => AnswerHomePage(
                                 userAnswers: tempList,
-                                quizAnswers: questionBody.answers,
+                                quiz: questionBody,
                               )));
                 },
                 textColor: Colors.white,
@@ -114,10 +113,5 @@ class _QuizHomePageState extends State<QuizHomePage> {
         ),
       ],
     );
-  }
-
-  Widget createCheckBoxGroup(List<dynamic> options, int index) {
-
-
   }
 }

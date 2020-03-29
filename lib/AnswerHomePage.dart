@@ -4,27 +4,28 @@ import 'package:inclasshomework/QuizController.dart';
 
 class AnswerHomePage extends StatefulWidget {
   var userAnswers;
-  var quizAnswers;
+  var quiz;
   static final String id = "answer_home_page";
 
-  AnswerHomePage({Key key, this.userAnswers, this.quizAnswers});
+  AnswerHomePage({Key key, this.userAnswers, this.quiz});
 
   @override
   _AnswerHomePageState createState() =>
-      _AnswerHomePageState(userAnswers: userAnswers, quizAnswers: quizAnswers);
+      _AnswerHomePageState(userAnswers: userAnswers, quiz: quiz);
 }
 
 class _AnswerHomePageState extends State<AnswerHomePage> {
   var style = TextStyle(fontSize: 50.0);
   var userAnswers;
-  var quizAnswers;
+  var quiz;
   var controller = new QuizController();
 
-  _AnswerHomePageState({Key key, this.userAnswers, this.quizAnswers});
+  _AnswerHomePageState({Key key, this.userAnswers, this.quiz});
 
   @override
   Widget build(BuildContext context) {
-    controller.quiz_answers = quizAnswers;
+    controller.quiz_questions = quiz.options;
+    controller.quiz_answers = quiz.answers;
     controller.quiz_user_responses = userAnswers;
     return Scaffold(
         appBar: AppBar(
