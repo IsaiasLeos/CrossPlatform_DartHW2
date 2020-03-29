@@ -1,9 +1,8 @@
 import 'dart:io';
 
 class QuizController {
-  var question_repo;
 
-  QuizController.question_repo(this.question_repo);
+  QuizController();
 
   ///holds the questions, answers, responses, and options
   ///depends on the user input for how many questions they want
@@ -15,15 +14,15 @@ class QuizController {
   ///total amount of questions
   var totalCount = 0;
 
-  ///Assign the number of questions that were given by the user.
-  void manage(int questionCount) {
-    totalCount += questionCount;
-    for (var i = 0; i < questionCount; i++) {
-      quiz_questions.add(question_repo.questions.elementAt(i));
-      quiz_answers.add(question_repo.answers.elementAt(i));
-      quiz_options.add(question_repo.options.elementAt(i));
-    }
-  }
+//  ///Assign the number of questions that were given by the user.
+//  void manage(int questionCount) {
+//    totalCount += questionCount;
+//    for (var i = 0; i < questionCount; i++) {
+//      quiz_questions.add(question_repo.questions.elementAt(i));
+//      quiz_answers.add(question_repo.answers.elementAt(i));
+//      quiz_options.add(question_repo.options.elementAt(i));
+//    }
+//  }
 
   ///Prints out the questions and gathers the responses from the user.
   ///Then calls calculateGrade to then print out the total point the user got.
