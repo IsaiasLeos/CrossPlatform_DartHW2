@@ -6,6 +6,9 @@ import 'package:inclasshomework/QuizParser.dart';
 import 'HomePage.dart';
 import 'ShowAlertDialog.dart';
 import 'User.dart';
+import 'Main.dart';
+
+import 'package:google_fonts/google_fonts.dart';
 
 class UserLogin extends StatefulWidget {
   String title;
@@ -45,7 +48,8 @@ class _UserLoginState extends State<UserLogin> {
   final passwordField = TextField(
     autofocus: false,
     obscureText: true,
-    keyboardType: TextInputType.text,
+    keyboardType:
+      TextInputType.text,
     controller: passEditingController,
     decoration: InputDecoration(
         labelText: "Password",
@@ -62,12 +66,22 @@ class _UserLoginState extends State<UserLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('$title'),
+      backgroundColor: createMaterialColor(Color(0xffd6d6d6)),
+      appBar:AppBar(
+        title: Center(
+            child:Text(
+              'LOGIN',
+              style: GoogleFonts.spectral(
+                  textStyle: TextStyle(
+                      color:createMaterialColor(Color(0xffeeeeeee)), letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 35 )),
+            )
+        ),
       ),
+
       body: Center(
         child: Container(
           padding: EdgeInsets.all(24),
+          decoration: BoxDecoration(border: Border.all(width: 4.0)),
           child: Center(
             child: Column(
               children: <Widget>[
@@ -104,7 +118,7 @@ class _UserLoginState extends State<UserLogin> {
                       }
                     },
                     textColor: Colors.white,
-                    color: Colors.blue,
+                    color: createMaterialColor(Color(0xff9575cd)),
                     height: 50,
                     child: Text("LOGIN"),
                   ),

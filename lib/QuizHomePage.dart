@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:inclasshomework/AnswerHomePage.dart';
+import 'Main.dart';
 
 import 'User.dart';
 
@@ -30,6 +31,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
   Widget build(BuildContext context) {
     int correctNumberTitle = user.quizNumber + 1;
     return Scaffold(
+        backgroundColor: createMaterialColor(Color(0xffd6d6d6)),
         appBar: AppBar(
           title: Text("Quiz $correctNumberTitle"),
           automaticallyImplyLeading: false,
@@ -45,8 +47,9 @@ class _QuizHomePageState extends State<QuizHomePage> {
                     if (questionBody.options[index] != 0) {
                       var tempList = questionBody.options[index].cast<String>();
                       return Card(
+                        color: createMaterialColor(Color(0xffffebee)),
                         child: Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.all(13.0),
                             child: Column(
                               children: <Widget>[
                                 Text(
@@ -65,8 +68,9 @@ class _QuizHomePageState extends State<QuizHomePage> {
                       );
                     } else {
                       return Card(
+                        color: createMaterialColor(Color(0xffe8eaf6)),
                         child: Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.all(13.0),
                             child: createOpenQuestion(bullet, index)),
                       );
                     }
@@ -86,8 +90,8 @@ class _QuizHomePageState extends State<QuizHomePage> {
                               )));
                 },
                 textColor: Colors.white,
-                color: Colors.blue,
-                height: 50,
+                color: createMaterialColor(Color(0xff9575cd)),
+                height: 30,
                 child: Text("SUBMIT"),
               ),
             ),
