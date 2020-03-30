@@ -2,8 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inclasshomework/QuizHomePage.dart';
 import 'package:inclasshomework/QuizParser.dart';
+import 'Main.dart';
 
 import 'User.dart';
+
+import 'package:google_fonts/google_fonts.dart';
+
 
 var questionBody;
 
@@ -40,11 +44,40 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: createMaterialColor(Color(0xffffebee)),
         appBar: AppBar(
-          title: Text("Choose a Quiz"),
+          title: Text( 'Flutter',
+            style: GoogleFonts.spectral(
+                textStyle: TextStyle(
+                    color:createMaterialColor(Color(0xffeeeeeee)), letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 20 )),),
         ),
         body: Column(
+
           children: <Widget>[
+            SizedBox(
+              height: 50,
+            ),
+            SizedBox(
+              height: 100,
+              child: Center(
+                child:  RichText(
+                  text: TextSpan(
+                    text: 'Pick a desired quiz to',
+                    style: GoogleFonts.spectral(
+                        textStyle: TextStyle(
+                            color:createMaterialColor(Color(0xff212121)),
+                            letterSpacing: .5, fontWeight: FontWeight.normal, fontSize: 20 )),
+                    children: <TextSpan>[
+                      TextSpan(text: ' start!', style: GoogleFonts.spectral(
+                      textStyle: TextStyle(
+                          color:createMaterialColor(Color(0xff212121)),
+                          letterSpacing: .5, fontWeight: FontWeight.normal, fontSize: 20 )),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                   itemCount: quizNumbers.length,
@@ -53,13 +86,19 @@ class _HomePageState extends State<HomePage> {
                       height: 50,
                       margin: EdgeInsets.all(2.0),
                       child: RaisedButton(
+                        color: createMaterialColor(Color(0xffd1c4e9)),
                         onPressed: () {
                           setState(() {
                             user.quizNumber = index;
                             _navigateHome(context);
                           });
                         },
-                        child: Text('${quizNumbers[index]}'),
+                        child: Text('${quizNumbers[index]}',
+                          style: GoogleFonts.spectral(
+                          textStyle: TextStyle(
+                           color:createMaterialColor(Color(0xff212121)),
+                            letterSpacing: .5, fontWeight: FontWeight.normal, fontSize: 20 )),),
+                          highlightColor: createMaterialColor(Color(0xffc5cae9)),
                       ),
                     );
                   }),
