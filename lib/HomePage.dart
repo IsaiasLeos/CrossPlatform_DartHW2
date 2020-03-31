@@ -82,8 +82,12 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Expanded(
-              child: ListView.builder(///builder to make a list from the number of quizzes
-                  itemCount: quizList.length,///quiz length
+              child: ListView.builder(
+
+                  ///builder to make a list from the number of quizzes
+                  itemCount: quizList.length,
+
+                  ///quiz length
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       height: 50,
@@ -91,9 +95,25 @@ class _HomePageState extends State<HomePage> {
                       child: RaisedButton(
                         color: createMaterialColor(Color(0xffd1c4e9)),
                         onPressed: () {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                child: new Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    new CircularProgressIndicator(),
+                                    new Text("Loading"),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
                           ///if the user presses a quiz button, it will assign the number
                           setState(() {
                             quizNumber = index;
+
                             ///call class to get user info
                             _getQuiz(context);
                           });
@@ -117,12 +137,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   _getQuiz(BuildContext context) async {
-    var parser = new QuizParser(user, quizNumber);///initiate class to obtain quiz information using credentials
-    var rawBody = await parser.getQuiz();///get the quiz from server
-    questionBody = await parser.parseQuestions(rawBody);///parse the questions into an object
-    await Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(///navigate to a new page passing user info and quiz information
-            builder: (context) => QuizHomePage(user: user, questionBody: questionBody)));
+    var parser = new QuizParser(user, quizNumber);
+
+    ///initiate class to obtain quiz information using credentials
+    var rawBody = await parser.getQuiz();
+
+    ///get the quiz from server
+    questionBody = await parser.parseQuestions(rawBody);
+
+    ///parse the questions into an object
+    await new Future.delayed(new Duration(seconds: 1), () {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+
+              ///navigate to a new page passing user info and quiz information
+              builder: (context) => QuizHomePage(user: user, questionBody: questionBody)));
+    });
   }
 }

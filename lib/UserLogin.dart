@@ -104,6 +104,22 @@ class _UserLoginState extends State<UserLogin> {
               Material(
                 child: MaterialButton(
                   onPressed: () async {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              new CircularProgressIndicator(),
+                              new Text("Loading"),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+
                     ///populate user information after clicking login
                     var user = new User(emailEditingController.text, passEditingController.text);
 
@@ -117,13 +133,16 @@ class _UserLoginState extends State<UserLogin> {
                     ///check the response code the server returned
                     if (isGood['response']) {
                       ///if valid navigate to homepage
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomePage(
-                                    ///pass user information
-                                    user: user,
-                                  )));
+                      new Future.delayed(new Duration(seconds: 1), () {
+                        Navigator.pop(context); //pop dialog
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                      ///pass user information
+                                      user: user,
+                                    )));
+                      });
                     } else {
                       ///show reason for issues with server
                       showAlertDialog(context, isGood['reason']);
