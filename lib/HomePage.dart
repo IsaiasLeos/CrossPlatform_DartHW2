@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
 
   ///list of quizzes
   final List<String> quizList = <String>[
+    'Quiz 0',
     'Quiz 1',
     'Quiz 2',
     'Quiz 3',
@@ -37,7 +38,6 @@ class _HomePageState extends State<HomePage> {
     'Quiz 5',
     'Quiz 6',
     'Quiz 7',
-    'Quiz 8',
   ];
 
   @override

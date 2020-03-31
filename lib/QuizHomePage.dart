@@ -90,7 +90,9 @@ class _QuizHomePageState extends State<QuizHomePage> {
                                   ('$bullet. ${questionBody.questions[index]}'),
                                   style: TextStyle(fontSize: 22.0),
                                 ),
-
+                                Image.network(
+                                  'http://www.cs.utep.edu/cheon/cs4381/homework/quiz/figure.php?name=${questionBody.figures[index]}',
+                                ),
                                 ///Radio button group used to figure out how to display options for the user
                                 RadioButtonGroup(
                                   labels: tempList,

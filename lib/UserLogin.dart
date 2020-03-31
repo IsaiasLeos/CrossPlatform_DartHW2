@@ -49,6 +49,7 @@ class _UserLoginState extends State<UserLogin> {
   ///password input + ui design
   final passwordField = TextField(
     autofocus: false,
+
     ///prevent text from showing
     obscureText: true,
     keyboardType: TextInputType.text,
@@ -83,58 +84,58 @@ class _UserLoginState extends State<UserLogin> {
       body: Center(
         child: Container(
           padding: EdgeInsets.all(24),
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                Center(
-                  child: SizedBox(
-                    height: 125,
-                  ),
-                ),
-                ///email widget
-                emailField,
-                SizedBox(
-                  height: 30,
-                ),
-                ///password widget
-                passwordField,
-                SizedBox(
-                  height: 50,
-                ),
-                Material(
-                  child: MaterialButton(
-                    onPressed: () async {
-                      ///populate user information after clicking login
-                      var user = new User(emailEditingController.text, passEditingController.text);
-                      ///used for validating if its a correct user.
-                      var tempCheck = new QuizParser(user, quizNumber);
-                      ///obtain a quiz, if a valid quiz is return user is autheticated with server
-                      var isGood = await tempCheck.getQuiz();
-                      isGood = json.decode(isGood);
-                      ///check the response code the server returned
-                      if (isGood['response']) {
-                        ///if valid navigate to homepage
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomePage(
-                                  ///pass user information
-                                      user: user,
-                                    )));
-                      } else {
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 125,
+              ),
 
-                        ///show reason for issues with server
-                        showAlertDialog(context, isGood['reason']);
-                      }
-                    },
-                    textColor: Colors.white,
-                    color: createMaterialColor(Color(0xff9575cd)),
-                    height: 50,
-                    child: Text("LOGIN"),
-                  ),
+              ///email widget
+              emailField,
+              SizedBox(
+                height: 30,
+              ),
+
+              ///password widget
+              passwordField,
+              SizedBox(
+                height: 50,
+              ),
+              Material(
+                child: MaterialButton(
+                  onPressed: () async {
+                    ///populate user information after clicking login
+                    var user = new User(emailEditingController.text, passEditingController.text);
+
+                    ///used for validating if its a correct user.
+                    var tempCheck = new QuizParser(user, quizNumber);
+
+                    ///obtain a quiz, if a valid quiz is return user is autheticated with server
+                    var isGood = await tempCheck.getQuiz();
+                    isGood = json.decode(isGood);
+
+                    ///check the response code the server returned
+                    if (isGood['response']) {
+                      ///if valid navigate to homepage
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePage(
+                                    ///pass user information
+                                    user: user,
+                                  )));
+                    } else {
+                      ///show reason for issues with server
+                      showAlertDialog(context, isGood['reason']);
+                    }
+                  },
+                  textColor: Colors.white,
+                  color: createMaterialColor(Color(0xff9575cd)),
+                  height: 50,
+                  child: Text("LOGIN"),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

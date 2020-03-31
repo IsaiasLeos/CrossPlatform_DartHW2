@@ -37,7 +37,6 @@ class _AnswerHomePageState extends State<AnswerHomePage> {
   var controller = new QuizController();
 
   ///Manage quiz grades
-
   _AnswerHomePageState({Key key, this.userAnswers, this.questionBody, this.user});
 
   @override
