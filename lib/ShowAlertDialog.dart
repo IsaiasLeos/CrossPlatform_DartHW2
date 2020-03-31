@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+///Alert dialog for displaying issues that appear within the application
 showAlertDialog(BuildContext context, String reason) {
-  // Create button
   Widget okButton = FlatButton(
     child: Text("OK"),
     onPressed: () {
@@ -9,7 +9,8 @@ showAlertDialog(BuildContext context, String reason) {
     },
   );
   AlertDialog alert = AlertDialog(
-    title: Text("Incorrect User Information"),
+    title: Text("Error"),
+    ///display the reason for the error
     content: Text("Reason: $reason"),
     actions: [
       okButton,

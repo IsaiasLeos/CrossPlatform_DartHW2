@@ -5,11 +5,13 @@ import 'package:http/http.dart' as http;
 import 'Questions.dart';
 import 'User.dart';
 
+///Class used to obtain and modified the information obtained from the quiz server.
 class QuizParser {
   String username;
   String password;
   int quizNumber;
 
+  ///Constructor
   QuizParser(User user, [int quizNumber]) {
     this.username = user.name;
     this.password = user.password;
@@ -31,8 +33,7 @@ class QuizParser {
     var questionRepo;
     if (decodedMsg != null) {
       var quiz = json.decode(decodedMsg);
-      questionRepo = Questions();
-      questionRepo.quizName = quiz['quiz']['name']; //Quiz Name
+      questionRepo = Questions();//Quiz Name
       var fixedQuiz = quiz['quiz']['question'] as List; //Question
       fixedQuiz.forEach((element) {
         //Iterate

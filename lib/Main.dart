@@ -1,34 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:inclasshomework/AnswerHomePage.dart';
-import 'package:inclasshomework/HomePage.dart';
-import 'package:inclasshomework/QuizHomePage.dart';
 
+import 'AnswerHomePage.dart';
+import 'HomePage.dart';
+import 'MaterialColor.dart';
+import 'QuizHomePage.dart';
 import 'UserLogin.dart';
 
 void main() {
   runApp(MyApplication());
 }
-
-MaterialColor createMaterialColor(Color color) {
-  List strengths = <double>[.05];
-  Map swatch = <int, Color>{};
-  final int r = color.red, g = color.green, b = color.blue;
-
-  for (int i = 1; i < 10; i++) {
-    strengths.add(0.1 * i);
-  }
-  strengths.forEach((strength) {
-    final double ds = 0.5 - strength;
-    swatch[(strength * 1000).round()] = Color.fromRGBO(
-      r + ((ds < 0 ? r : (255 - r)) * ds).round(),
-      g + ((ds < 0 ? g : (255 - g)) * ds).round(),
-      b + ((ds < 0 ? b : (255 - b)) * ds).round(),
-      1,
-    );
-  });
-  return MaterialColor(color.value, swatch);
-}
-
 
 class MyApplication extends StatelessWidget {
   @override
@@ -38,7 +18,7 @@ class MyApplication extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: createMaterialColor(Color(0xff9575cd)),
       ),
-      home: UserLogin(title: 'LOGIN'),
+      home: UserLogin(),
       initialRoute: UserLogin.id,
       routes: {
         UserLogin.id: (context) => UserLogin(),

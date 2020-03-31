@@ -1,17 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:inclasshomework/QuizHomePage.dart';
-import 'package:inclasshomework/QuizParser.dart';
 
-import 'Main.dart';
+import 'MaterialColor.dart';
+import 'QuizHomePage.dart';
+import 'QuizParser.dart';
 import 'User.dart';
 
 var questionBody;
 var quizNumber = 0;
 
+///homepage used to display all available quizzes
 class HomePage extends StatefulWidget {
-  final User user;
+  User user;
+
+  ///user information i.e. username, password
   static final String id = "home_page";
 
   HomePage({this.user});
@@ -21,10 +24,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final User user;
+  User user;
 
   _HomePageState({Key key, this.user});
 
+  ///list of quizzes
   final List<String> quizList = <String>[
     'Quiz 1',
     'Quiz 2',
@@ -34,10 +38,6 @@ class _HomePageState extends State<HomePage> {
     'Quiz 6',
     'Quiz 7',
     'Quiz 8',
-    'Quiz 9',
-    'Quiz 10',
-    'Quiz 11',
-    'Quiz 12',
   ];
 
   @override
@@ -45,16 +45,20 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: createMaterialColor(Color(0xffffebee)),
         appBar: AppBar(
-          title: Center(
-              child: Text(
+          automaticallyImplyLeading: true,
+
+          ///allow back button
+          title: Text(
             'Home Page',
+
+            ///title bar text
             style: GoogleFonts.spectral(
                 textStyle: TextStyle(
                     color: createMaterialColor(Color(0xffeeeeeee)),
                     letterSpacing: .5,
                     fontWeight: FontWeight.bold,
                     fontSize: 35)),
-          )),
+          ),
         ),
         body: Column(
           children: <Widget>[
@@ -66,31 +70,20 @@ class _HomePageState extends State<HomePage> {
               child: Center(
                 child: RichText(
                   text: TextSpan(
-                    text: 'Pick a desired quiz to',
+                    text: 'Pick a desired quiz to start!',
                     style: GoogleFonts.spectral(
                         textStyle: TextStyle(
                             color: createMaterialColor(Color(0xff212121)),
                             letterSpacing: .5,
                             fontWeight: FontWeight.normal,
                             fontSize: 20)),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: ' start!',
-                        style: GoogleFonts.spectral(
-                            textStyle: TextStyle(
-                                color: createMaterialColor(Color(0xff212121)),
-                                letterSpacing: .5,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 20)),
-                      )
-                    ],
                   ),
                 ),
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                  itemCount: quizList.length,
+              child: ListView.builder(///builder to make a list from the number of quizzes
+                  itemCount: quizList.length,///quiz length
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       height: 50,
@@ -98,9 +91,11 @@ class _HomePageState extends State<HomePage> {
                       child: RaisedButton(
                         color: createMaterialColor(Color(0xffd1c4e9)),
                         onPressed: () {
+                          ///if the user presses a quiz button, it will assign the number
                           setState(() {
                             quizNumber = index;
-                            _navigateHome(context);
+                            ///call class to get user info
+                            _getQuiz(context);
                           });
                         },
                         child: Text(
@@ -121,13 +116,13 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  _navigateHome(BuildContext context) async {
-    var parser = new QuizParser(user, quizNumber);
-    var rawBody = await parser.getQuiz();
-    questionBody = await parser.parseQuestions(rawBody);
-    await Navigator.push(
+  _getQuiz(BuildContext context) async {
+    var parser = new QuizParser(user, quizNumber);///initiate class to obtain quiz information using credentials
+    var rawBody = await parser.getQuiz();///get the quiz from server
+    questionBody = await parser.parseQuestions(rawBody);///parse the questions into an object
+    await Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
+        MaterialPageRoute(///navigate to a new page passing user info and quiz information
             builder: (context) => QuizHomePage(user: user, questionBody: questionBody)));
   }
 }
