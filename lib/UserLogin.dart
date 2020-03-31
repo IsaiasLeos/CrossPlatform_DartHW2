@@ -1,14 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:inclasshomework/QuizParser.dart';
 
 import 'HomePage.dart';
+import 'Main.dart';
 import 'ShowAlertDialog.dart';
 import 'User.dart';
-import 'Main.dart';
 
-import 'package:google_fonts/google_fonts.dart';
+int quizNumber = 0;
 
 class UserLogin extends StatefulWidget {
   String title;
@@ -48,8 +49,7 @@ class _UserLoginState extends State<UserLogin> {
   final passwordField = TextField(
     autofocus: false,
     obscureText: true,
-    keyboardType:
-      TextInputType.text,
+    keyboardType: TextInputType.text,
     controller: passEditingController,
     decoration: InputDecoration(
         labelText: "Password",
@@ -67,21 +67,21 @@ class _UserLoginState extends State<UserLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: createMaterialColor(Color(0xffd6d6d6)),
-      appBar:AppBar(
+      appBar: AppBar(
         title: Center(
-            child:Text(
-              'LOGIN',
-              style: GoogleFonts.spectral(
-                  textStyle: TextStyle(
-                      color:createMaterialColor(Color(0xffeeeeeee)), letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 35 )),
-            )
-        ),
+            child: Text(
+          'Login Page',
+          style: GoogleFonts.spectral(
+              textStyle: TextStyle(
+                  color: createMaterialColor(Color(0xffeeeeeee)),
+                  letterSpacing: .5,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 35)),
+        )),
       ),
-
       body: Center(
         child: Container(
           padding: EdgeInsets.all(24),
-          decoration: BoxDecoration(border: Border.all(width: 4.0)),
           child: Center(
             child: Column(
               children: <Widget>[
@@ -101,9 +101,8 @@ class _UserLoginState extends State<UserLogin> {
                 Material(
                   child: MaterialButton(
                     onPressed: () async {
-                      var user =
-                          new User(emailEditingController.text, passEditingController.text, 1);
-                      var tempCheck = new QuizParser(user);
+                      var user = new User(emailEditingController.text, passEditingController.text);
+                      var tempCheck = new QuizParser(user, quizNumber);
                       var isGood = await tempCheck.getQuiz();
                       isGood = json.decode(isGood);
                       if (isGood['response']) {

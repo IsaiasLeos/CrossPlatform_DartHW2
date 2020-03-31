@@ -9,27 +9,28 @@ import 'User.dart';
 
 List<String> userAnswers = List(10);
 
-class QuizHomePage extends StatefulWidget {
+class ReviewHomePage extends StatefulWidget {
   User user;
   var questionBody;
 
   static final String id = "quiz_home_page";
 
-  QuizHomePage({this.user, this.questionBody});
+  ReviewHomePage({this.user, this.questionBody});
 
   @override
-  _QuizHomePageState createState() => _QuizHomePageState(user: user, questionBody: questionBody);
+  _ReviewHomePage createState() => _ReviewHomePage(questionBody: questionBody);
 }
 
-class _QuizHomePageState extends State<QuizHomePage> {
+class _ReviewHomePage extends State<ReviewHomePage> {
   var user;
   var questionBody;
   int selected;
 
-  _QuizHomePageState({Key key, this.user, this.questionBody});
+  _ReviewHomePage({Key key, this.questionBody});
 
   @override
   Widget build(BuildContext context) {
+    int correctNumberTitle = user.quizNumber + 1;
     return new WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -98,7 +99,6 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => AnswerHomePage(
-                            user: user,
                             userAnswers: tempList,
                             quiz: questionBody,
                           )));

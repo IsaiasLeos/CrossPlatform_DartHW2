@@ -13,7 +13,7 @@ class QuizParser {
   QuizParser(User user, [int quizNumber]) {
     this.username = user.name;
     this.password = user.password;
-    this.quizNumber = user.quizNumber;
+    this.quizNumber = quizNumber;
   }
 
   ///Makes connection with server to obtain a quiz in JSON format.
